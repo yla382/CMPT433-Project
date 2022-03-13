@@ -1,0 +1,112 @@
+body {
+    height: 100vh;
+    width: 100%;
+}
+
+.sidebar {
+    background-color: white;
+    width: 450px;
+    height: 100%;
+    overflow-x: hidden;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    transition: 0.5s;
+}
+
+.main {
+    width: auto;
+    height: 100%;
+    margin-left: 450px;
+    background-color: #c3c3c9;
+    transition: margin-left .5s;
+}
+
+.controlContiner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    background-color:white;
+    margin-left: 20px;
+    height: 100%;
+}
+
+#videoContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+#video {
+    width: 50%;
+    height: 400px;
+}
+
+#buttonContainer {
+    margin-bottom: 20px;
+}
+
+#dataContainer {
+    width: 90%;
+    /* display: flex;
+    justify-content: space-evenly; */
+}
+
+.side_Container {
+    margin:15px;
+    min-width: 420px;
+}
+
+.side_title {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.notConnected {
+    opacity: 0.4;
+    filter: alpha(opacity=40); 
+}
+
+.connected {
+    opacity: none;
+    filter: none;
+}
+
+.side_title a {
+    font-size: 28px;
+}
+
+.roverContainer a{
+    font-size: 20px;
+}
+
+.svg-icon {
+    width: 35px;
+    height: 35px;
+    display: block;
+}
+
+.svg-icon path {
+    fill: black;
+}
+
+.roverContainer {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.imageClass {
+    width: 100%;
+}
+
+/* .table_container {
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 100%;
+    overflow-y: auto;
+} */
+
+
