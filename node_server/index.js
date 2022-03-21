@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
                                 throw err;
                         }
                         //console.log('UDP message sent to ' + HOST +':'+ PORT);
-                });
+                }) ;
 
 
                 client.on('listening', function () {
