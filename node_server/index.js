@@ -40,7 +40,6 @@ io.on('connection', (socket) => {
         });
 });
 
-
 server.listen({ port }, () => {
         console.log(`🚀 Server ready at http://0.0.0.0:${port}`);
 });
