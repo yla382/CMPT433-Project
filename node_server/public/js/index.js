@@ -16,9 +16,10 @@ socket.on("connect", (socket) => {
     console.log("Connected");
 });
 
-// socket.on("ROVER_1_AVAILABLE", function() {
-//     console.log()
-// });
+setInterval(function() {
+    socket.emit('REQUEST', "UPDATE");
+    
+}, 900);
 
 $( document ).ready(function() {
     $('.svg-icon').on('click', function() {
@@ -30,6 +31,21 @@ $( document ).ready(function() {
             openNav();
             $('.side_Container').children().show();
             $('.side_title').children('a').show();
+        }
+    });
+
+
+    $('#turnoffButton').on('click', function() {
+        socket.emit('REQUEST', "QUIT");
+        alert("Rover #1 off");
+        $(this).hide();
+    });
+
+    socket.on('commandReply', function(result) {
+        const commands = result.split(",");
+        if (commands[0] == "update") {
+            $("#runTime").text(commands[1]);
+            //$('#turnOffBeatBox').show();
         }
     });
 });
