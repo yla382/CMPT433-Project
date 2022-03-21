@@ -12,10 +12,6 @@ function closeNav() {
 
 const socket = io();
 
-socket.on("connect", (socket) => {
-    console.log("Connected");
-});
-
 // socket.on("ROVER_1_AVAILABLE", function() {
 //     console.log()
 // });
@@ -32,4 +28,13 @@ $( document ).ready(function() {
             $('.side_title').children('a').show();
         }
     });
+
+
+    socket.on("connect", (socket) => {
+        console.log("Connected");
+    });
+
+    socket.on("disconnect", () => {
+        console.log("Disconnected");
+      });
 });
