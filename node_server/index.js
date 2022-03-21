@@ -31,7 +31,7 @@ io.on('connection', (socket) => {
 
                 // Handle an incoming message over the UDP from the local application.
                 client.on('message', function (message, remote) {
-                        var reply = message.toString('utf8')
+                        var reply = message.toString('utf8');
                         socket.emit('commandReply', reply);
 
                         client.close();

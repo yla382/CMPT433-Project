@@ -45,6 +45,7 @@ $( document ).ready(function() {
         const commands = result.split(",");
         if (commands[0] == "update") {
             $("#runTime").text(commands[1]);
+            $("#lightLevel").text(commands[2]);
             //$('#turnOffBeatBox').show();
         }
     });

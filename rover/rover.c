@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <sys/sysinfo.h>
 #include "network.h"
+#include "light_sampler.h"
 
 #define THREAD_NUM 1
 
@@ -16,14 +17,14 @@ static char *getProgramStatus() {
 	struct sysinfo info;
 	sysinfo(&info);
 	
-	int hour, minute, seconds;
+	int hour, minute, seconds, lightLevel;
 	hour = (info.uptime / 3600);
 	minute = (info.uptime - (3600 * hour)) / 60;
 	seconds = (info.uptime - (3600 * hour)- (minute * 60));
-	
-	static char status[40];
-	memset(status, 0, sizeof(char)*40);
-	snprintf(status, 40, "update,%d:%d:%d", hour, minute, seconds);
+	lightLevel = getLightLevel();
+	static char status[1024];
+	memset(status, 0, sizeof(char)*1024);
+	snprintf(status, 1024, "update,%d:%d:%d,%d", hour, minute, seconds, lightLevel);
 	return status;
 }
 
@@ -48,7 +49,6 @@ static void *udpCommunication() {
 	closeConnection();
 	return NULL;
 }
-
 
 int main() {
 	printf("Initiating the Rover #1\n");
