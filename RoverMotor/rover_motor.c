@@ -84,3 +84,13 @@ void turnOffMotors() {
     driveMotor(MOTOR_PIN_3, RELAY_OFF);
     driveMotor(MOTOR_PIN_4, RELAY_OFF);
 }
+
+void rotateLeftMotors() {
+    driveMotor(MOTOR_PIN_1, RELAY_OFF);
+    driveMotor(MOTOR_PIN_2, RELAY_OFF);
+}
+
+void rotateRightMotors() {
+    driveMotor(MOTOR_PIN_3, RELAY_OFF);
+    driveMotor(MOTOR_PIN_4, RELAY_OFF);
+}
