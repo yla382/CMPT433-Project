@@ -8,6 +8,10 @@ const startRouter = require('./routers/startPage.js');
 const {SERVER_PORT: port = 3000} = process.env;
 const dgram = require('dgram');
 const config = require('./config.js');
+const cors = require('cors');
+const child = require('child_process');
+
+app.use(cors());
 
 app.use('/', startRouter);
 
@@ -21,7 +25,6 @@ io.on('connection', (socket) => {
                         if (err)  {
                                 throw err;
                         }
-                        //console.log('UDP message sent to ' + HOST +':'+ PORT);
                 }) ;
 
 
@@ -32,11 +35,37 @@ io.on('connection', (socket) => {
                 // Handle an incoming message over the UDP from the local application.
                 client.on('message', function (message, remote) {
                         var reply = message.toString('utf8');
+                        console.log(reply);
                         socket.emit('commandReply', reply);
 
                         client.close();
 
                 });
+        });
+
+        const ffmpeg = child.spawn("ffmpeg", [
+                "-re", 
+                "-y", 
+                "-i", 
+                "udp://192.168.7.1:1234",
+                "-preset", 
+                "ultrafast", 
+                "-f", 
+                "mjpeg", 
+                "pipe:1"
+                ]);
+        ffmpeg.on('error', function (err) {
+                throw err;
+        });
+
+        ffmpeg.on('close', function (code) {
+                console.log('ffmpeg exited with code ' + code);
+        });
+
+        ffmpeg.stdout.on('data', function (data) {
+
+                var frame = new Buffer(data).toString('base64');
+                io.sockets.emit('canvas',frame);
         });
 });
 
