@@ -12,6 +12,14 @@ int main()
     turnAllMotors();
     sleep_ms(1000);
     turnOffMotors();
+    sleep_ms(1000);
+    turnAllMotors();
+    sleep_ms(1000);
+    turnOffMotors();
+    sleep_ms(1000);
+    turnAllMotors();
+    sleep_ms(1000);
+    turnOffMotors();
     printf("test");
     return 0;
 }
