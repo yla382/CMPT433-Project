@@ -4,6 +4,7 @@
 #include <sys/sysinfo.h>
 #include "network.h"
 #include "light_sampler.h"
+#include "rover_motor.h"
 
 #define THREAD_NUM 1
 
@@ -34,6 +35,7 @@ static void *udpCommunication() {
 	while(continueProram) {
 		char request[1024];
 		receiveRequest(request, 1024);
+		printf("%s\n", request);
 		
 		if(strcmp(request, "QUIT") == 0) {
 			continueProram = false;
@@ -41,6 +43,14 @@ static void *udpCommunication() {
 		} else if(strcmp(request, "UPDATE") == 0) {
 			char *status = getProgramStatus();
 			sendResponse(status);
+		} else if(strcmp(request, "MOTOR_LEFT") == 0) {
+			rotateLeftMotors();
+		} else if(strcmp(request, "MOTOR_RIGHT") == 0) {
+			rotateRightMotors();
+		} else if(strcmp(request, "MOTOR_GO") == 0) {
+			turnAllMotors();
+		} else if(strcmp(request, "MOTOR_STOP") == 0) {
+			turnOffMotors();
 		} else {
 			continue;
 		}
@@ -52,6 +62,8 @@ static void *udpCommunication() {
 
 int main() {
 	printf("Initiating the Rover #1\n");
+
+	initGpioMotor(); // initialize gpio motors
 
 	pthread_create(&tids[0], NULL, udpCommunication, NULL);
 

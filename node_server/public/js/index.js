@@ -41,6 +41,23 @@ $( document ).ready(function() {
         $(this).hide();
     });
 
+    $('#turnLeftButton').on('click', function() {
+        socket.emit('REQUEST', "MOTOR_LEFT");
+        console.log("turn Left")
+    });
+    $('#turnRightButton').on('click', function() {
+        socket.emit('REQUEST', "MOTOR_RIGHT");
+        console.log("turn right")
+    });
+    $('#turnUpButton').on('click', function() {
+        socket.emit('REQUEST', "MOTOR_GO");
+        console.log("go")
+    });
+    $('#turnDownButton').on('click', function() {
+        socket.emit('REQUEST', "MOTOR_STOP");
+        console.log("stop")
+    });
+
     socket.on('commandReply', function(result) {
         const commands = result.split(",");
         if (commands[0] == "update") {
