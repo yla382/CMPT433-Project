@@ -56,9 +56,11 @@ $( document ).ready(function() {
         const image = new Image();
         image.src = "data:image/jpeg;base64,"+data;
         image.onload = function(){
+            //context.scale(-1,1);
             context.height = image.height;
             context.width = image.width;
-            context.drawImage(image,0,0,context.width,context.height);
+            context.drawImage(image,0,0,context.width, context.height);
+            //context.drawImage(image,0,0,context.width * -1, context.height);
         }
     });
 });

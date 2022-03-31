@@ -43,18 +43,20 @@ io.on('connection', (socket) => {
                 });
         });
 
-        const ffmpeg = child.spawn("ffmpeg", [
+        let ffmpeg = child.spawn("ffmpeg", [
                 "-re", 
                 "-y", 
                 "-i", 
                 "udp://192.168.7.1:1234",
-                "-preset", 
+                "-preset",  
                 "ultrafast", 
                 "-f", 
                 "mjpeg", 
                 "pipe:1"
                 ]);
+        //let ffmpeg = child.spawn("./video");
         ffmpeg.on('error', function (err) {
+                console.log(err);
                 throw err;
         });
 
@@ -62,9 +64,13 @@ io.on('connection', (socket) => {
                 console.log('ffmpeg exited with code ' + code);
         });
 
-        ffmpeg.stdout.on('data', function (data) {
+        ffmpeg.stderr.on('data', function(data) {
+                // Don't remove this
+                // Child Process hangs when stderr exceed certain memory
+        });
 
-                var frame = new Buffer(data).toString('base64');
+        ffmpeg.stdout.on('data', function (data) {
+                var frame = Buffer.from(data).toString('base64');
                 io.sockets.emit('canvas',frame);
         });
 });

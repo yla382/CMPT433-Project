@@ -2,6 +2,9 @@
 #include <stdbool.h>
 #include <pthread.h>
 #include <sys/sysinfo.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <signal.h>
 #include "network.h"
 #include "light_sampler.h"
 
@@ -51,14 +54,25 @@ static void *udpCommunication() {
 }
 
 int main() {
-	printf("Initiating the Rover #1\n");
 
-	pthread_create(&tids[0], NULL, udpCommunication, NULL);
+	pid_t pid = fork();
+	if(pid == 0) {
+		static char *argv[]={};
+		execv("./capture", argv);
+		exit(127);
+	} else {
+		printf("Initiating the Rover #1\n");
 
-	//Wait until threads are done and clean up memories used by threads
-	for(int i = 0; i < THREAD_NUM; i++) {
-		pthread_join(tids[i], NULL);
+		pthread_create(&tids[0], NULL, udpCommunication, NULL);
+
+		//Wait until threads are done and clean up memories used by threads
+		for(int i = 0; i < THREAD_NUM; i++) {
+			pthread_join(tids[i], NULL);
+		}
+
+		printf("Finished the Rover #1\n");
+		kill(pid, SIGKILL);
 	}
 
-	printf("Finished the Rover #1\n");
+	return 0;
 }
