@@ -24,8 +24,9 @@ static char *getProgramStatus() {
 	seconds = (info.uptime - (3600 * hour)- (minute * 60));
 	lightLevel = getLightLevel();
 	static char status[1024];
+	double light_reading = getLightLevelVoltage();
 	memset(status, 0, sizeof(char)*1024);
-	snprintf(status, 1024, "update,%d:%d:%d,%d", hour, minute, seconds, lightLevel);
+	snprintf(status, 1024, "update,%d:%d:%d,%d, %f", hour, minute, seconds, lightLevel, light_reading);
 	return status;
 }
 
@@ -42,6 +43,7 @@ static void *udpCommunication() {
 			break; //exit the while loop
 		} else if(strcmp(request, "UPDATE") == 0) {
 			char *status = getProgramStatus();
+
 			sendResponse(status);
 		} else if(strcmp(request, "MOTOR_LEFT") == 0) {
 			rotateLeftMotors();
