@@ -1,4 +1,5 @@
-/*
+/*  
+ *  Code retrieved from https://github.com/derekmolloy/boneCV/blob/master/capture.c
  *  V4L2 video capture example, modified by Derek Molloy for the Logitech C920 camera
  *  Modifications, added the -F mode for H264 capture and associated help detail
  *  www.derekmolloy.ie
@@ -9,6 +10,10 @@
  *
  *      This program is provided with the V4L2 API
  * see http://linuxtv.org/docs.php for more information
+ *
+ * CMPT433
+ * Minor Modification made by Yoonhong to add socket programming to send video data in udp packets
+ * instead of adding video data to stdout
  */
 
 #include <stdio.h>
