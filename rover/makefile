@@ -1,6 +1,6 @@
 TARGET= rover
 
-SOURCES= network.c rover.c light_sampler.c
+SOURCES= network.c rover.c light_sampler.c rover_motor.c
 
 
 PUBDIR = $(HOME)/cmpt433/public/myApps

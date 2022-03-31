@@ -65,6 +65,7 @@ static void exportGpioSetOff(int linuxPinNumber) {
 }
 
 void initGpioMotor() {
+	printf("init gpio motor\n");
     exportGpioSetOff(MOTOR_PIN_1);
     exportGpioSetOff(MOTOR_PIN_2);
     exportGpioSetOff(MOTOR_PIN_3);
@@ -72,6 +73,7 @@ void initGpioMotor() {
 }
 
 void turnAllMotors() {
+	printf("on motor\n");
     driveMotor(MOTOR_PIN_1, RELAY_ON);
     driveMotor(MOTOR_PIN_2, RELAY_ON);
     driveMotor(MOTOR_PIN_3, RELAY_ON);
@@ -79,6 +81,7 @@ void turnAllMotors() {
 }
 
 void turnOffMotors() {
+	printf("off motor\n");
     driveMotor(MOTOR_PIN_1, RELAY_OFF);
     driveMotor(MOTOR_PIN_2, RELAY_OFF);
     driveMotor(MOTOR_PIN_3, RELAY_OFF);
@@ -86,13 +89,15 @@ void turnOffMotors() {
 }
 
 void rotateLeftMotors() {
+	printf("left motor\n");
 	turnOffMotors();
-    driveMotor(MOTOR_PIN_1, RELAY_OFF);
-    driveMotor(MOTOR_PIN_2, RELAY_OFF);
+    driveMotor(MOTOR_PIN_1, RELAY_ON);
+    driveMotor(MOTOR_PIN_2, RELAY_ON);
 }
 
 void rotateRightMotors() {
+	printf("right motor\n");
 	turnOffMotors();
-    driveMotor(MOTOR_PIN_3, RELAY_OFF);
-    driveMotor(MOTOR_PIN_4, RELAY_OFF);
+    driveMotor(MOTOR_PIN_3, RELAY_ON);
+    driveMotor(MOTOR_PIN_4, RELAY_ON);
 }

@@ -37,6 +37,7 @@ io.on('connection', (socket) => {
                         var reply = message.toString('utf8');
                         console.log(reply);
                         socket.emit('commandReply', reply);
+                        console.log(reply);
 
                         client.close();
 
