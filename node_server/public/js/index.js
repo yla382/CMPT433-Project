@@ -60,9 +60,12 @@ $( document ).ready(function() {
 
     socket.on('commandReply', function(result) {
         const commands = result.split(",");
+        console.log(commands)
         if (commands[0] == "update") {
             $("#runTime").text(commands[1]);
             $("#lightLevel").text(commands[2]);
+            var str = "x:"+commands[3] + ", y:" + commands[4] + ", z:" + commands[5]
+            $("#accelerometer").text(str);
             //$('#turnOffBeatBox').show();
         }
     });
