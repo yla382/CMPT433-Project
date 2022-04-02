@@ -3,6 +3,7 @@
         "stdio.h": "c",
         "assert.h": "c",
         "stdlib.h": "c",
-        "rover_motor.h": "c"
+        "rover_motor.h": "c",
+        "accelerometer.h": "c"
     }
 }

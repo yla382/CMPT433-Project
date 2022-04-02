@@ -8,6 +8,7 @@
 #include "network.h"
 #include "light_sampler.h"
 #include "rover_motor.h"
+#include "accelerometer.h"
 
 #define THREAD_NUM 1
 
@@ -20,6 +21,7 @@ Function to get string containing program info such as runtime
 static char *getProgramStatus() {
 	struct sysinfo info;
 	sysinfo(&info);
+	int* accelerometer = Accelerometer_getReadings();
 	
 	int hour, minute, seconds, lightLevel;
 	hour = (info.uptime / 3600);
@@ -27,9 +29,8 @@ static char *getProgramStatus() {
 	seconds = (info.uptime - (3600 * hour)- (minute * 60));
 	lightLevel = getLightLevel();
 	static char status[1024];
-	double light_reading = getLightLevelVoltage();
 	memset(status, 0, sizeof(char)*1024);
-	snprintf(status, 1024, "update,%d:%d:%d,%d, %f", hour, minute, seconds, lightLevel, light_reading);
+	snprintf(status, 1024, "update,%d:%d:%d,%d,%d,%d,%d", hour, minute, seconds, lightLevel, accelerometer[0], accelerometer[1], accelerometer[2]);
 	return status;
 }
 
@@ -74,6 +75,7 @@ int main() {
 	} else {
 		printf("Initiating the Rover #1\n");
 		initGpioMotor(); // initialize gpio motors
+		Accelerometer_initialize();
 		pthread_create(&tids[0], NULL, udpCommunication, NULL);
 
 		//Wait until threads are done and clean up memories used by threads
@@ -82,6 +84,7 @@ int main() {
 		}
 
 		printf("Finished the Rover #1\n");
+		Accelerometer_destroy();
 		kill(pid, SIGKILL);
 	}
 
