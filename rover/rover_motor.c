@@ -4,6 +4,7 @@
 #include <time.h>
 #include <stdbool.h>
 #include <assert.h>
+#include "leds.h"
 
 #define RELAY_SWITCH_GPIO   "/sys/class/gpio/gpio"
 #define EXPORT_FILE         "/sys/class/gpio/export"
@@ -78,6 +79,7 @@ void turnAllMotors() {
     driveMotor(MOTOR_PIN_2, RELAY_ON);
     driveMotor(MOTOR_PIN_3, RELAY_ON);
     driveMotor(MOTOR_PIN_4, RELAY_ON);
+	turnOnGoLED();
 }
 
 void turnOffMotors() {
@@ -86,6 +88,7 @@ void turnOffMotors() {
     driveMotor(MOTOR_PIN_2, RELAY_OFF);
     driveMotor(MOTOR_PIN_3, RELAY_OFF);
     driveMotor(MOTOR_PIN_4, RELAY_OFF);
+	turnOffAllLED();
 }
 
 void rotateLeftMotors() {
@@ -93,6 +96,7 @@ void rotateLeftMotors() {
 	turnOffMotors();
     driveMotor(MOTOR_PIN_1, RELAY_ON);
     driveMotor(MOTOR_PIN_2, RELAY_ON);
+	turnOnLeftLED();
 }
 
 void rotateRightMotors() {
@@ -100,4 +104,5 @@ void rotateRightMotors() {
 	turnOffMotors();
     driveMotor(MOTOR_PIN_3, RELAY_ON);
     driveMotor(MOTOR_PIN_4, RELAY_ON);
+	turnOnRightLED();
 }

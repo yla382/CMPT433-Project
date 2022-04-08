@@ -9,8 +9,10 @@
 #include "light_sampler.h"
 #include "rover_motor.h"
 #include "accelerometer.h"
+#include "joyStickControl.h"
+#include "leds.h"
 
-#define THREAD_NUM 1
+#define THREAD_NUM 2
 
 static pthread_t tids[THREAD_NUM];
 static bool continueProram = true;
@@ -66,6 +68,13 @@ static void *udpCommunication() {
 	return NULL;
 }
 
+static void *joystickThread() {
+	while(continueProram) {
+		getDirections();
+	}
+	return NULL;
+}
+
 int main() {
 	pid_t pid = fork();
 	if(pid == 0) {
@@ -75,8 +84,11 @@ int main() {
 	} else {
 		printf("Initiating the Rover #1\n");
 		initGpioMotor(); // initialize gpio motors
+		initializeJoyStick();
 		Accelerometer_initialize();
+		turnOffAllLED();
 		pthread_create(&tids[0], NULL, udpCommunication, NULL);
+		pthread_create(&tids[1], NULL, joystickThread, NULL);
 
 		//Wait until threads are done and clean up memories used by threads
 		for(int i = 0; i < THREAD_NUM; i++) {

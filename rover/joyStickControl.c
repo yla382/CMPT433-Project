@@ -4,6 +4,7 @@
 #include "joyStickControl.h"
 #include "sleep.h"
 #include "fileHandler.h" // importing file read/write methods
+#include "rover_motor.h"
 
 // Number of possible events for GPIO joystick
 #define MAX_EVENTS 5
@@ -68,7 +69,7 @@ Return the direction of joystick pressed
 input: void
 output: enum
 */
-Joy_Direction getDirections() 
+void getDirections() 
 {
 	// set joystick direction for input
 	setFile(GPIO_DIRECTION_LEFT, DIRECTION_SETTING);
@@ -78,29 +79,19 @@ Joy_Direction getDirections()
 	setFile(GPIO_DIRECTION_CENTER, DIRECTION_SETTING);
 
 	char leftVal = getFileContent(GPIO_VALUE_LEFT);
-	if (leftVal == '0') {
-		return LEFT;
-	}
-
 	char rightVal = getFileContent(GPIO_VALUE_RIGHT);
-	if (rightVal == '0') {
-		return RIGHT;
-	}
-
 	char upVal = getFileContent(GPIO_VALUE_UP);
-	if (upVal == '0') {
-		return UP;
-	}
-
 	char downVal = getFileContent(GPIO_VALUE_DOWN);
-	if (downVal == '0') {
-		return DOWN;
-	}
-
 	char centerVal = getFileContent(GPIO_VALUE_CENTER);
-	if (centerVal == '0') {
-		return CENTER;
+	if (leftVal == '0') {
+		rotateLeftMotors();
+	} else if (rightVal == '0') {
+		rotateRightMotors();
+	} else if (upVal == '0') {
+		turnAllMotors();
+	} else if (downVal == '0') {
+		turnOffMotors();
+	} else if (centerVal == '0') {
+		// toggle screen?
 	}
-
-	return INVALID;
 }
