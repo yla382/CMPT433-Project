@@ -14,11 +14,15 @@
 #include "joyStickControl.h"
 #include "leds.h"
 #include "led_display.h"
+#include "morsecode.h"
+#include "audioMixer_template.h"
+#include "audio.h"
 
-#define THREAD_NUM 3
+#define THREAD_NUM 4
 
 static pthread_t tids[THREAD_NUM];
 static bool continueProram = true;
+static char *morsecode = NULL;
 
 static int extractRequest(char *str, char **arg1, char **arg2) {
 	char separator[] = ":"; 
@@ -60,6 +64,26 @@ static char *getProgramStatus() {
 	return status;
 }
 
+static void *playSound() {
+	initialize_audio_files();
+
+	while(continueProram) {
+		if(morsecode != NULL) {
+			if(strlen(morsecode) > 0) {
+				printf("%s\n", morsecode);
+				talk_morse_code(morsecode);
+			} else {
+				printf("Invalid\n");
+			}
+			free(morsecode);
+			morsecode = NULL;
+		}
+	}
+
+	remove_audio_files();
+	return NULL;
+}
+
 
 static void *udpCommunication() {
 	openConnection();
@@ -77,7 +101,6 @@ static void *udpCommunication() {
 			break; //exit the while loop
 		} else if(strcmp(arg1, "UPDATE") == 0) {
 			char *status = getProgramStatus();
-
 			sendResponse(status);
 		} else if(strcmp(arg1, "MOTOR_LEFT") == 0) {
 			rotateLeftMotors();
@@ -88,7 +111,8 @@ static void *udpCommunication() {
 		} else if(strcmp(arg1, "MOTOR_STOP") == 0) {
 			turnOffMotors();
 		} else if(strcmp(arg1, "TEXT") == 0) {
-			printf("%s\n", arg2);
+			if(strlen(arg2) > 0) printf("%s\n", arg2);
+			morsecode = getMorseCode(arg2);
 		} else {
 			continue;
 		}
@@ -120,6 +144,7 @@ int main() {
 		exit(127);
 	} else {
 		printf("Initiating the Rover #1\n");
+		start_audio();
 		initGpioMotor(); // initialize gpio motors
 		initializeJoyStick();
 		Accelerometer_initialize();
@@ -128,6 +153,7 @@ int main() {
 		pthread_create(&tids[0], NULL, udpCommunication, NULL);
 		pthread_create(&tids[1], NULL, joystickThread, NULL);
 		pthread_create(&tids[2], NULL, display, NULL);
+		pthread_create(&tids[3], NULL, playSound, NULL);
 
 		//Wait until threads are done and clean up memories used by threads
 		for(int i = 0; i < THREAD_NUM; i++) {
@@ -136,6 +162,7 @@ int main() {
 
 		printf("Finished the Rover #1\n");
 		Accelerometer_destroy();
+		quit_audio();
 		kill(pid, SIGKILL);
 	}
 

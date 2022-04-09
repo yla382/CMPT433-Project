@@ -10,6 +10,8 @@ const dgram = require('dgram');
 const config = require('./config.js');
 const cors = require('cors');
 const child = require('child_process');
+const text2wav = require('text2wav');
+const assert = require('assert');
 
 app.use(cors());
 
@@ -21,13 +23,13 @@ io.on('connection', (socket) => {
         socket.on('REQUEST', (data) => {
                 var client = dgram.createSocket('udp4');
                 var buffer = new Buffer(data);
+
                 client.send(buffer, 0, buffer.length, config.rover_1_port, config.rover_1_ip, function(err, bytes) {
                         if (err)  {
                                 throw err;
                         }
-                }) ;
+                });
 
-                console.log(data);
 
                 client.on('listening', function () {
                         var address = client.address();
@@ -36,9 +38,9 @@ io.on('connection', (socket) => {
                 // Handle an incoming message over the UDP from the local application.
                 client.on('message', function (message, remote) {
                         var reply = message.toString('utf8');
-                        console.log(reply);
+                        //console.log(reply);
                         socket.emit('commandReply', reply);
-                        console.log(reply);
+                        //console.log(reply);
 
                         client.close();
 
