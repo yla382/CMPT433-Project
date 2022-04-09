@@ -10,6 +10,15 @@ function closeNav() {
     $('#menu-collapse').attr('id', 'menu-expand');
 }
 
+function getTextInput() {
+    const text_input = $('#text-input').val();
+    return text_input.trim();
+}
+
+function clearTextInput() {
+    $('#text-input').val('');
+}
+
 const socket = io();
 
 socket.on("connect", (socket) => {
@@ -39,6 +48,14 @@ $( document ).ready(function() {
         socket.emit('REQUEST', "QUIT");
         alert("Rover #1 off");
         $(this).hide();
+    });
+
+    $('#text-input-button').on('click', function() {
+        const text = getTextInput();
+        if(text !== '') {
+            socket.emit('REQUEST', "TEXT:" + text);
+            clearTextInput();
+        }
     });
 
     $('#turnLeftButton').on('mousedown', function() {

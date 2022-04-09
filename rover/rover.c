@@ -5,6 +5,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <string.h>
+#include <ctype.h>
 #include "network.h"
 #include "light_sampler.h"
 #include "rover_motor.h"
@@ -16,6 +18,27 @@
 
 static pthread_t tids[THREAD_NUM];
 static bool continueProram = true;
+
+static int extractRequest(char *str, char **arg1, char **arg2) {
+	char separator[] = ":"; 
+	//get first string by converting first space into 0
+	char *sepPointer = strtok(str, separator);
+	*arg1 = sepPointer;
+	
+	int sepCount = 1;
+	bool arg2Defined = false;
+	//loop through rest of the input to separte string by space
+	while(sepPointer != NULL) {
+		sepPointer = strtok(NULL, separator);
+		if(!arg2Defined) {
+			arg2Defined = true;
+			*arg2 = sepPointer;
+		}
+		sepCount++;
+	}
+
+	return sepCount;
+}
 
 /*
 Function to get string containing program info such as runtime
@@ -42,23 +65,29 @@ static void *udpCommunication() {
 	while(continueProram) {
 		char request[1024];
 		receiveRequest(request, 1024);
-		printf("%s\n", request);
 		
-		if(strcmp(request, "QUIT") == 0) {
+		char *arg1 = NULL;
+		char *arg2 = NULL;
+
+		extractRequest(request, &arg1, &arg2);
+		
+		if(strcmp(arg1, "QUIT") == 0) {
 			continueProram = false;
 			break; //exit the while loop
-		} else if(strcmp(request, "UPDATE") == 0) {
+		} else if(strcmp(arg1, "UPDATE") == 0) {
 			char *status = getProgramStatus();
 
 			sendResponse(status);
-		} else if(strcmp(request, "MOTOR_LEFT") == 0) {
+		} else if(strcmp(arg1, "MOTOR_LEFT") == 0) {
 			rotateLeftMotors();
-		} else if(strcmp(request, "MOTOR_RIGHT") == 0) {
+		} else if(strcmp(arg1, "MOTOR_RIGHT") == 0) {
 			rotateRightMotors();
-		} else if(strcmp(request, "MOTOR_GO") == 0) {
+		} else if(strcmp(arg1, "MOTOR_GO") == 0) {
 			turnAllMotors();
-		} else if(strcmp(request, "MOTOR_STOP") == 0) {
+		} else if(strcmp(arg1, "MOTOR_STOP") == 0) {
 			turnOffMotors();
+		} else if(strcmp(arg1, "TEXT") == 0) {
+			printf("%s\n", arg2);
 		} else {
 			continue;
 		}

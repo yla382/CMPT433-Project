@@ -27,6 +27,7 @@ io.on('connection', (socket) => {
                         }
                 }) ;
 
+                console.log(data);
 
                 client.on('listening', function () {
                         var address = client.address();
