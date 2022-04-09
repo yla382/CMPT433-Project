@@ -13,8 +13,9 @@
 #include "accelerometer.h"
 #include "joyStickControl.h"
 #include "leds.h"
+#include "led_display.h"
 
-#define THREAD_NUM 2
+#define THREAD_NUM 3
 
 static pthread_t tids[THREAD_NUM];
 static bool continueProram = true;
@@ -104,6 +105,13 @@ static void *joystickThread() {
 	return NULL;
 }
 
+static void *display() {
+	while(continueProram) {
+		ledDisplay();
+	}
+	return NULL;
+}
+
 int main() {
 	pid_t pid = fork();
 	if(pid == 0) {
@@ -115,9 +123,11 @@ int main() {
 		initGpioMotor(); // initialize gpio motors
 		initializeJoyStick();
 		Accelerometer_initialize();
+		ledScreenStartInit();
 		turnOffAllLED();
 		pthread_create(&tids[0], NULL, udpCommunication, NULL);
 		pthread_create(&tids[1], NULL, joystickThread, NULL);
+		pthread_create(&tids[2], NULL, display, NULL);
 
 		//Wait until threads are done and clean up memories used by threads
 		for(int i = 0; i < THREAD_NUM; i++) {
