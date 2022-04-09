@@ -1,6 +1,6 @@
 TARGET= rover
 
-SOURCES= network.c morsecode.c audio.c audioMixer_template.c rover.c light_sampler.c rover_motor.c accelerometer.c joyStickControl.c sleep.c fileHandler.c leds.c led_display.c
+SOURCES= network.c morsecode.c audio.c potential_meter.c audioMixer_template.c rover.c light_sampler.c rover_motor.c accelerometer.c joyStickControl.c sleep.c fileHandler.c leds.c led_display.c
 
 
 PUBDIR = $(HOME)/cmpt433/public/myApps

@@ -106,13 +106,8 @@ if volumn - 5 is < MIN_VOLUMN then set volumn to MIN_VOLUMN
 input: bool
 output: void
 */
-void changeVolumn(bool increase) 
+void changeVolumn(int changePercentage) 
 {
-    int newVolumn = AudioMixer_getVolume();
-    if(increase) {
-        newVolumn = newVolumn + 5 >= MAX_VOLUMN ? MAX_VOLUMN : newVolumn + 5;
-    } else {
-        newVolumn = newVolumn - 5 <= MIN_VOLUMN ? MIN_VOLUMN : newVolumn - 5;
-    }
+    int newVolumn = changePercentage;
     AudioMixer_setVolume(newVolumn);
 }

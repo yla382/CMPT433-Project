@@ -53,6 +53,6 @@ if volumn - 5 is < MIN_VOLUMN then set volumn to MIN_VOLUMN
 input: bool
 output: void
 */
-void changeVolumn(bool increase);
+void changeVolumn(int changePercentage);
 
 #endif

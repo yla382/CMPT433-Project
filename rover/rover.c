@@ -17,13 +17,16 @@
 #include "morsecode.h"
 #include "audioMixer_template.h"
 #include "audio.h"
+#include "potential_meter.h"
+#include "sleep.h"
 
-#define THREAD_NUM 4
+#define THREAD_NUM 5
 
 static pthread_t tids[THREAD_NUM];
 static bool continueProram = true;
 static char *morsecode = NULL;
 static int currentLightIntensity = 0;
+static int currentPotVal = 0;
 
 static int extractRequest(char *str, char **arg1, char **arg2) {
 	char separator[] = ":"; 
@@ -150,6 +153,18 @@ static void *display() {
 	return NULL;
 }
 
+static void *updateVolumn() {
+	while(continueProram) {
+		int potVal = getPotReadingPercentage();
+		if(currentPotVal != potVal) {
+			currentPotVal = potVal;
+			changeVolumn(currentPotVal);
+		}
+		sleepNow(0, 500000000);
+	}
+	return NULL;
+}
+
 int main() {
 	pid_t pid = fork();
 	if(pid == 0) {
@@ -162,12 +177,13 @@ int main() {
 		initGpioMotor(); // initialize gpio motors
 		initializeJoyStick();
 		Accelerometer_initialize();
-		//ledScreenStartInit();
+		
 		turnOffAllLED();
 		pthread_create(&tids[0], NULL, udpCommunication, NULL);
 		pthread_create(&tids[1], NULL, joystickThread, NULL);
 		pthread_create(&tids[2], NULL, display, NULL);
 		pthread_create(&tids[3], NULL, playSound, NULL);
+		pthread_create(&tids[4], NULL, updateVolumn, NULL);
 
 		//Wait until threads are done and clean up memories used by threads
 		for(int i = 0; i < THREAD_NUM; i++) {
