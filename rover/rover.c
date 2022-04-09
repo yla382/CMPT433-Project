@@ -23,6 +23,7 @@
 static pthread_t tids[THREAD_NUM];
 static bool continueProram = true;
 static char *morsecode = NULL;
+static int currentLightIntensity = 0;
 
 static int extractRequest(char *str, char **arg1, char **arg2) {
 	char separator[] = ":"; 
@@ -58,6 +59,7 @@ static char *getProgramStatus() {
 	minute = (info.uptime - (3600 * hour)) / 60;
 	seconds = (info.uptime - (3600 * hour)- (minute * 60));
 	lightLevel = getLightLevel();
+	currentLightIntensity = getLightLevelPercentage();
 	static char status[1024];
 	memset(status, 0, sizeof(char)*1024);
 	snprintf(status, 1024, "update,%d:%d:%d,%d,%d,%d,%d", hour, minute, seconds, lightLevel, accelerometer[0], accelerometer[1], accelerometer[2]);
@@ -130,9 +132,21 @@ static void *joystickThread() {
 }
 
 static void *display() {
+	initializeDisplay();
 	while(continueProram) {
-		ledDisplay();
+		int lightIntensity = currentLightIntensity;
+		int stringLen = snprintf(NULL, 0, "%d", lightIntensity);
+		char *lightIntensityStr = malloc(sizeof(char) * stringLen + 1);
+		
+		snprintf(lightIntensityStr, stringLen + 1, "%d", lightIntensity);
+		
+		//show current dip count to display
+		displayScreen(lightIntensityStr);
+		free(lightIntensityStr);
+		lightIntensityStr = NULL;
 	}
+	//Turn off display
+	closeDisplay();
 	return NULL;
 }
 
@@ -148,7 +162,7 @@ int main() {
 		initGpioMotor(); // initialize gpio motors
 		initializeJoyStick();
 		Accelerometer_initialize();
-		ledScreenStartInit();
+		//ledScreenStartInit();
 		turnOffAllLED();
 		pthread_create(&tids[0], NULL, udpCommunication, NULL);
 		pthread_create(&tids[1], NULL, joystickThread, NULL);
