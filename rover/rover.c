@@ -13,11 +13,13 @@
 #include "accelerometer.h"
 #include "joyStickControl.h"
 #include "leds.h"
+#include "morsecode.h"
 
-#define THREAD_NUM 2
+#define THREAD_NUM 3
 
 static pthread_t tids[THREAD_NUM];
 static bool continueProram = true;
+static char *morsecode = NULL;
 
 static int extractRequest(char *str, char **arg1, char **arg2) {
 	char separator[] = ":"; 
@@ -59,6 +61,21 @@ static char *getProgramStatus() {
 	return status;
 }
 
+static void *playSound() {
+	//initialize_audio_files();
+
+	while(continueProram) {
+		if(morsecode != NULL && strlen(morsecode) > 0) {
+			printf("%s\n", morsecode);
+			free(morsecode);
+			morsecode = NULL;
+		}
+	}
+
+	//remove_audio_files();
+	return NULL;
+}
+
 
 static void *udpCommunication() {
 	openConnection();
@@ -76,7 +93,6 @@ static void *udpCommunication() {
 			break; //exit the while loop
 		} else if(strcmp(arg1, "UPDATE") == 0) {
 			char *status = getProgramStatus();
-
 			sendResponse(status);
 		} else if(strcmp(arg1, "MOTOR_LEFT") == 0) {
 			rotateLeftMotors();
@@ -87,7 +103,7 @@ static void *udpCommunication() {
 		} else if(strcmp(arg1, "MOTOR_STOP") == 0) {
 			turnOffMotors();
 		} else if(strcmp(arg1, "TEXT") == 0) {
-			printf("%s\n", arg2);
+			morsecode = getMorseCode(arg2);
 		} else {
 			continue;
 		}
@@ -118,6 +134,7 @@ int main() {
 		turnOffAllLED();
 		pthread_create(&tids[0], NULL, udpCommunication, NULL);
 		pthread_create(&tids[1], NULL, joystickThread, NULL);
+		pthread_create(&tids[2], NULL, playSound, NULL);
 
 		//Wait until threads are done and clean up memories used by threads
 		for(int i = 0; i < THREAD_NUM; i++) {
