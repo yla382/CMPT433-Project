@@ -14,6 +14,8 @@
 #include "joyStickControl.h"
 #include "leds.h"
 #include "morsecode.h"
+#include "audioMixer_template.h"
+#include "audio.h"
 
 #define THREAD_NUM 3
 
@@ -62,17 +64,22 @@ static char *getProgramStatus() {
 }
 
 static void *playSound() {
-	//initialize_audio_files();
+	initialize_audio_files();
 
 	while(continueProram) {
-		if(morsecode != NULL && strlen(morsecode) > 0) {
-			printf("%s\n", morsecode);
+		if(morsecode != NULL) {
+			if(strlen(morsecode) > 0) {
+				printf("%s\n", morsecode);
+				talk_morse_code(morsecode);
+			} else {
+				printf("Invalid\n");
+			}
 			free(morsecode);
 			morsecode = NULL;
 		}
 	}
 
-	//remove_audio_files();
+	remove_audio_files();
 	return NULL;
 }
 
@@ -103,6 +110,7 @@ static void *udpCommunication() {
 		} else if(strcmp(arg1, "MOTOR_STOP") == 0) {
 			turnOffMotors();
 		} else if(strcmp(arg1, "TEXT") == 0) {
+			if(strlen(arg2) > 0) printf("%s\n", arg2);
 			morsecode = getMorseCode(arg2);
 		} else {
 			continue;
@@ -128,6 +136,7 @@ int main() {
 		exit(127);
 	} else {
 		printf("Initiating the Rover #1\n");
+		start_audio();
 		initGpioMotor(); // initialize gpio motors
 		initializeJoyStick();
 		Accelerometer_initialize();
@@ -143,6 +152,7 @@ int main() {
 
 		printf("Finished the Rover #1\n");
 		Accelerometer_destroy();
+		quit_audio();
 		kill(pid, SIGKILL);
 	}
 

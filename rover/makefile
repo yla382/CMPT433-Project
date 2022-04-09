@@ -1,6 +1,6 @@
 TARGET= rover
 
-SOURCES= network.c morsecode.c rover.c light_sampler.c rover_motor.c accelerometer.c joyStickControl.c sleep.c fileHandler.c leds.c
+SOURCES= network.c morsecode.c audio.c audioMixer_template.c rover.c light_sampler.c rover_motor.c accelerometer.c joyStickControl.c sleep.c fileHandler.c leds.c
 
 
 PUBDIR = $(HOME)/cmpt433/public/myApps
@@ -11,9 +11,10 @@ CC_C = $(CROSS_TOOL)gcc
 
 CFLAGS = -Wall -g -std=c99 -D _POSIX_C_SOURCE=200809L -Werror
 
+LFLAGS = -L$(HOME)/cmpt433/public/asound_lib_BBB
 
 all: wav
-	$(CC_C) $(CFLAGS) $(SOURCES) -o $(OUTDIR)/$(TARGET) -lpthread 
+	$(CC_C) $(CFLAGS) $(SOURCES) -o $(OUTDIR)/$(TARGET) $(LFLAGS) -lpthread -lasound
 	arm-linux-gnueabihf-gcc -Wall -g -std=c99 -D _POSIX_C_SOURCE=200809L -Werror capture.c -o $(OUTDIR)/capture
 
 wav:
