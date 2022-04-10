@@ -10,6 +10,15 @@ function closeNav() {
     $('#menu-collapse').attr('id', 'menu-expand');
 }
 
+function getTextInput() {
+    const text_input = $('#text-input').val();
+    return text_input.trim();
+}
+
+function clearTextInput() {
+    $('#text-input').val('');
+}
+
 const socket = io();
 
 socket.on("connect", (socket) => {
@@ -41,21 +50,30 @@ $( document ).ready(function() {
         $(this).hide();
     });
 
-    $('#turnLeftButton').on('click', function() {
+    $('#text-input-button').on('click', function() {
+        const text = getTextInput();
+        if(text !== '') {
+            socket.emit('REQUEST', "TEXT:" + text);
+            clearTextInput();
+        }
+    });
+
+    $('#turnLeftButton').on('mousedown', function() {
         socket.emit('REQUEST', "MOTOR_LEFT");
-        console.log("turn Left")
+    }).on('mouseup mouseleave', function() {
+        socket.emit('REQUEST', "MOTOR_STOP")
     });
-    $('#turnRightButton').on('click', function() {
+
+    $('#turnRightButton').on('mousedown', function() {
         socket.emit('REQUEST', "MOTOR_RIGHT");
-        console.log("turn right")
+    }).on('mouseup mouseleave', function() {
+        socket.emit('REQUEST', "MOTOR_STOP")
     });
-    $('#turnUpButton').on('click', function() {
+
+    $('#turnUpButton').on('mousedown', function() {
         socket.emit('REQUEST', "MOTOR_GO");
-        console.log("go")
-    });
-    $('#turnDownButton').on('click', function() {
-        socket.emit('REQUEST', "MOTOR_STOP");
-        console.log("stop")
+    }).on('mouseup mouseleave', function() {
+        socket.emit('REQUEST', "MOTOR_STOP")
     });
 
     socket.on('commandReply', function(result) {

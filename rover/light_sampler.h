@@ -14,5 +14,6 @@ output: double
 double getLightLevelVoltage(void);
 
 int getLightLevel();
+int getLightLevelPercentage();
 
 #endif

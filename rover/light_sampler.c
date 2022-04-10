@@ -30,7 +30,10 @@ static int getLightLevelReading() {
 	return lightLevelReading;
 }
 
-
+int getLightLevelPercentage() {
+	int val = ((double) getLightLevelReading() / A2D_MAX_READING) * 100;
+	return val;
+}
 /*
 Get voltage of the current light level from light sensor
 input: void
