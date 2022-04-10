@@ -84,7 +84,9 @@ $( document ).ready(function() {
             $("#lightLevel").text(commands[2]);
             var str = "x:"+commands[3] + ", y:" + commands[4] + ", z:" + commands[5]
             $("#accelerometer").text(str);
-            //$('#turnOffBeatBox').show();
+            $("#temperature").text(commands[6]);
+            $('#humidity').text(commands[7]);
+            $('#turnoffButton').show();
         }
     });
 

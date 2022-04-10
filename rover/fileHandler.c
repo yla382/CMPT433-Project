@@ -25,6 +25,18 @@ void setFile(char *fileName, char *value)
 }
 
 
+void readFile(char *fileName, char *buff, int arrLength) {
+	FILE *pFile = fopen(fileName, "r");
+	if (pFile == NULL) {
+		printf("ERROR: Unable to open file (%s) for read\n", fileName);
+		exit(-1);
+	}
+
+	fgets(buff, arrLength, pFile);
+	fclose(pFile);
+}
+
+
 /*
 Read the file and retrieve the file content (0 or 1)
 input: char*

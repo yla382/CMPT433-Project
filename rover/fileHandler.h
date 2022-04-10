@@ -8,6 +8,8 @@ output: void
 */
 void setFile(char *fileName, char *value);
 
+void readFile(char *fileName, char *buff, int arrLength);
+
 /*
 Read the file and retrieve the file content
 input: char*

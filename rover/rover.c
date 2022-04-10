@@ -19,6 +19,7 @@
 #include "audio.h"
 #include "potential_meter.h"
 #include "sleep.h"
+#include "temp_hum.h"
 
 #define THREAD_NUM 5
 
@@ -61,11 +62,21 @@ static char *getProgramStatus() {
 	hour = (info.uptime / 3600);
 	minute = (info.uptime - (3600 * hour)) / 60;
 	seconds = (info.uptime - (3600 * hour)- (minute * 60));
+
 	lightLevel = getLightLevel();
 	currentLightIntensity = getLightLevelPercentage();
+
+	double temperature, humidity;
+	temperature = getTemperature();
+	humidity = getHumidity();
+
 	static char status[1024];
 	memset(status, 0, sizeof(char)*1024);
-	snprintf(status, 1024, "update,%d:%d:%d,%d,%d,%d,%d", hour, minute, seconds, lightLevel, accelerometer[0], accelerometer[1], accelerometer[2]);
+	snprintf(status, 1024, "update,%d:%d:%d,%d,%d,%d,%d,%.2f,%.2f", 
+				hour, minute, seconds, lightLevel, 
+				accelerometer[0], accelerometer[1], accelerometer[2],
+				temperature, humidity
+			);
 	return status;
 }
 
