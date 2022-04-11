@@ -13,7 +13,20 @@ output: double
 */
 double getLightLevelVoltage(void);
 
-int getLightLevel();
-int getLightLevelPercentage();
+
+/*
+Get percentage of lightlevel (max 4095)
+intput: void
+output: int
+*/
+int getLightLevelPercentage(void);
+
+
+/*
+Get light value
+intput: void
+output: void
+*/
+int getLightLevel(void);
 
 #endif

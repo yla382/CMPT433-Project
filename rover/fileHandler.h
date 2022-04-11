@@ -8,6 +8,11 @@ output: void
 */
 void setFile(char *fileName, char *value);
 
+/*
+Copy the whole content of file
+input: char*, char*, int
+output: void
+*/
 void readFile(char *fileName, char *buff, int arrLength);
 
 /*

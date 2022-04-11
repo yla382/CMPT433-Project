@@ -24,7 +24,11 @@ void setFile(char *fileName, char *value)
 	fclose(file);
 }
 
-
+/*
+Copy the whole content of file
+input: char*, char*, int
+output: void
+*/
 void readFile(char *fileName, char *buff, int arrLength) {
 	FILE *pFile = fopen(fileName, "r");
 	if (pFile == NULL) {

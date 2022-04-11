@@ -35,11 +35,17 @@ output: void
 */
 void remove_audio_files();
 
+/*
+Plays trumpet
+input: void
+output: void
+*/
+void play_trumpet();
 
 
 /*
-Adds wavedata to buffer to play rock beat 2
-input: void
+play short and long beep for morsecode
+input: char*
 output: void
 */
 void talk_morse_code(char *str);

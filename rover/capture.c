@@ -48,6 +48,7 @@ static struct sockaddr_in sinT;
 static struct sockaddr_in sinRemoteT;
 static int socketDescriptorT;
 
+//Initialize UDP connection
 void openConnectionT() 
 {
         memset(&sinT, 0, sizeof(sinT));
@@ -63,13 +64,10 @@ void openConnectionT()
         sinRemoteT.sin_addr.s_addr = inet_addr("192.168.7.1");
 }
 
+//Send video frame using udp packet
 int sendResponseT(const void *str, int size) 
 {
         int packetSent = 0;
-        //char array that will be used copy message to packet
-        // void responsePacket[size];
-        // memset(responsePacket, 0, size);
-        // strcpy(responsePacket, str);
         sendto(socketDescriptorT,
                         str,
                         size,
@@ -82,12 +80,12 @@ int sendResponseT(const void *str, int size)
         return packetSent;
 }
 
+//Close udp connection
 void closeConnectionT() 
 {
         close(socketDescriptorT);
 }
 
-//////////////////////////////////////////
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
 
 enum io_method {
@@ -127,21 +125,14 @@ static int xioctl(int fh, int request, void *arg)
         return r;
 }
 
-//////////////////////////////////////////////////////////
 static void process_image(const void *p, int size)
 {
         if (out_buf) {
-                //fwrite(p, size, 1, stdout);
-                //printf("%s\n", p);
                 sendResponseT(p, size);
-                //printf("frame\n");
         }
 
         fflush(stderr);
-        //fprintf(stderr, ".");
-        //fflush(stdout);
 }
-///////////////////////////////////////////////////////////
 
 static int read_frame(void)
 {

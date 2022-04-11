@@ -19,7 +19,7 @@
 #include "audio.h"
 #include "potential_meter.h"
 #include "sleep.h"
-#include "temp_hum.h"
+// #include "temp_hum.h" - Removed due to hardware complication
 
 #define THREAD_NUM 5
 
@@ -50,7 +50,6 @@ static int extractRequest(char *str, char **arg1, char **arg2) {
 	return sepCount;
 }
 
-#include "bbb_dht_read.h"
 /*
 Function to get string containing program info such as runtime
 */
@@ -70,13 +69,8 @@ static char *getProgramStatus() {
 	float temperature, humidity;
 	temperature = 0;
 	humidity = 0;
-	//printf("%f\n", humidity);
-	// printf("%f\n", temperature);
-	//int result = bbb_dht_read(22, 0, 2, &humidity, &temperature);
-	// printf("result: %d\n", result);
-	// printf("%f\n", humidity);
-	// printf("%f\n", temperature);
-	// updateTempHumData(&temperature, &humidity);
+	
+	// updateTempHumData(&temperature, &humidity); //Removed due to hardware complication
 
 	static char status[1024];
 	memset(status, 0, sizeof(char)*1024);
@@ -90,7 +84,7 @@ static char *getProgramStatus() {
 
 static void *playSound() {
 	initialize_audio_files();
-
+	play_trumpet();
 	while(continueProram) {
 		if(morsecode != NULL) {
 			if(strlen(morsecode) > 0) {
@@ -103,8 +97,9 @@ static void *playSound() {
 			morsecode = NULL;
 		}
 	}
-
+	
 	remove_audio_files();
+	printf("Ending playSound() thread\n");
 	return NULL;
 }
 
@@ -143,6 +138,7 @@ static void *udpCommunication() {
 		memset(request, 0, sizeof(char)*1024);
 	}
 	closeConnection();
+	printf("Ending udpCommunication() thread\n");
 	return NULL;
 }
 
@@ -150,6 +146,7 @@ static void *joystickThread() {
 	while(continueProram) {
 		getDirections();
 	}
+	printf("Ending joystickThread() thread\n");
 	return NULL;
 }
 
@@ -169,6 +166,7 @@ static void *display() {
 	}
 	//Turn off display
 	closeDisplay();
+	printf("Ending display() thread\n");
 	return NULL;
 }
 
@@ -181,6 +179,7 @@ static void *updateVolumn() {
 		}
 		sleepNow(0, 500000000);
 	}
+	printf("Ending updateVolumn() thread\n");
 	return NULL;
 }
 
@@ -189,7 +188,7 @@ int main() {
 
 	if(pid == 0) {
 		static char *argv[]={};
-		execv("./capture", argv);
+		execv("./capture", argv); //Run capture.c
 		exit(127);
 	} else {
 		printf("Initiating the Rover #1\n");
@@ -213,7 +212,7 @@ int main() {
 		printf("Finished the Rover #1\n");
 		Accelerometer_destroy();
 		quit_audio();
-		kill(pid, SIGKILL);
+		kill(pid, SIGKILL); //Terminate Child Process
 	}
 
 	return 0;

@@ -11,9 +11,12 @@
 
 #define BEEP      "rover_sounds/beep.wav"
 #define LONG_BEEP "rover_sounds/long_beep.wav"
+#define TRUMPET   "rover_sounds/trumpet.wav"
+#define GUITAR   "rover_sounds/guitar.wav"
 
 static wavedata_t beep;
 static wavedata_t long_beep;
+static wavedata_t trumpet;
 
 //Current tempo status
 static int tempo = 150;
@@ -47,6 +50,7 @@ void initialize_audio_files()
 {
     AudioMixer_readWaveFileIntoMemory(BEEP, &beep);
     AudioMixer_readWaveFileIntoMemory(LONG_BEEP, &long_beep);
+    AudioMixer_readWaveFileIntoMemory(TRUMPET, &trumpet);
 }
 
 /*
@@ -58,6 +62,7 @@ void remove_audio_files()
 {
     AudioMixer_freeWaveFileData(&beep);
     AudioMixer_freeWaveFileData(&long_beep);
+    AudioMixer_freeWaveFileData(&trumpet);
 }
 
 /*
@@ -73,6 +78,20 @@ static void waitTempo(int tempo, int note)
     nanosleep(&reqDelay, (struct timespec *) NULL);
 }
 
+/*
+Plays trumpet
+input: void
+output: void
+*/
+void play_trumpet() {
+    AudioMixer_queueSound(&trumpet);
+}
+
+/*
+Play long beep and short beep for the morsecode
+input: char*
+output: void
+*/
 void talk_morse_code(char *str) 
 {
     char prev = '!';

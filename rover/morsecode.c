@@ -54,6 +54,12 @@ static bool isAlphabet(char ch)
 	return ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'));
 }
 
+
+/*
+Convert sentence to morsecode
+input: char*
+return char*
+*/
 char *getMorseCode(char *str) {
 	char *morseCode = malloc(MAX_LEN * sizeof(char));
 	memset(morseCode, 0, MAX_LEN);

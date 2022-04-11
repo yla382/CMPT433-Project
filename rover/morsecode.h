@@ -6,6 +6,12 @@
 #ifndef MORSECODE_H
 #define MORSECODE_H
 
+
+/*
+Convert sentence to morsecode
+input: char*
+return char*
+*/
 char *getMorseCode(char *str);
 
 #endif

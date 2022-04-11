@@ -8,12 +8,7 @@ const startRouter = require('./routers/startPage.js');
 const {SERVER_PORT: port = 3000} = process.env;
 const dgram = require('dgram');
 const config = require('./config.js');
-const cors = require('cors');
 const child = require('child_process');
-const text2wav = require('text2wav');
-const assert = require('assert');
-
-app.use(cors());
 
 app.use('/', startRouter);
 
@@ -24,29 +19,29 @@ io.on('connection', (socket) => {
                 var client = dgram.createSocket('udp4');
                 var buffer = new Buffer(data);
 
+                //Replay request from client to Rover
                 client.send(buffer, 0, buffer.length, config.rover_1_port, config.rover_1_ip, function(err, bytes) {
                         if (err)  {
                                 throw err;
                         }
                 });
 
-
+                //Listen to request from rover
                 client.on('listening', function () {
                         var address = client.address();
                 });
 
-                // Handle an incoming message over the UDP from the local application.
+                //Listen to request from rover
+                // Handle an incoming message over the UDP from rover.
                 client.on('message', function (message, remote) {
                         var reply = message.toString('utf8');
-                        //console.log(reply);
                         socket.emit('commandReply', reply);
-                        //console.log(reply);
-
                         client.close();
 
                 });
         });
 
+        //Create child process to handle video streaming
         let ffmpeg = child.spawn("ffmpeg", [
                 "-re", 
                 "-y", 
@@ -58,7 +53,7 @@ io.on('connection', (socket) => {
                 "mjpeg", 
                 "pipe:1"
                 ]);
-        //let ffmpeg = child.spawn("./video");
+        
         ffmpeg.on('error', function (err) {
                 console.log(err);
                 throw err;
@@ -73,6 +68,7 @@ io.on('connection', (socket) => {
                 // Child Process hangs when stderr exceed certain memory
         });
 
+        //Convert raw video frame to string and sent to client
         ffmpeg.stdout.on('data', function (data) {
                 var frame = Buffer.from(data).toString('base64');
                 io.sockets.emit('canvas',frame);

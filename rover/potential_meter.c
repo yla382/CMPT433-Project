@@ -30,6 +30,12 @@ static int getPotReading() {
 	return potReading;
 }
 
+
+/*
+Value of the potentiometer percentage
+input: void
+output: int
+*/
 int getPotReadingPercentage(void) {
 	int val =  ((double) getPotReading() / A2D_MAX_READING) * 100;
 	return val;
