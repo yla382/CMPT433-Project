@@ -50,6 +50,7 @@ static int extractRequest(char *str, char **arg1, char **arg2) {
 	return sepCount;
 }
 
+#include "bbb_dht_read.h"
 /*
 Function to get string containing program info such as runtime
 */
@@ -66,9 +67,16 @@ static char *getProgramStatus() {
 	lightLevel = getLightLevel();
 	currentLightIntensity = getLightLevelPercentage();
 
-	double temperature, humidity;
-	temperature = getTemperature();
-	humidity = getHumidity();
+	float temperature, humidity;
+	temperature = 0;
+	humidity = 0;
+	//printf("%f\n", humidity);
+	// printf("%f\n", temperature);
+	//int result = bbb_dht_read(22, 0, 2, &humidity, &temperature);
+	// printf("result: %d\n", result);
+	// printf("%f\n", humidity);
+	// printf("%f\n", temperature);
+	// updateTempHumData(&temperature, &humidity);
 
 	static char status[1024];
 	memset(status, 0, sizeof(char)*1024);
@@ -178,6 +186,7 @@ static void *updateVolumn() {
 
 int main() {
 	pid_t pid = fork();
+
 	if(pid == 0) {
 		static char *argv[]={};
 		execv("./capture", argv);
