@@ -9,14 +9,11 @@
 #define MAX_VOLUMN 100
 #define MIN_VOLUMN 0
 
-#define BEEP      "rover_sounds/beep.wav"
-#define LONG_BEEP "rover_sounds/long_beep.wav"
-#define TRUMPET   "rover_sounds/trumpet.wav"
-#define GUITAR   "rover_sounds/guitar.wav"
+#define BEEP      "rover_sounds/194283__datwilightz__beep-1.wav"
+#define LONG_BEEP "rover_sounds/194284__datwilightz__beep-dennis-1-long.wav"
 
 static wavedata_t beep;
 static wavedata_t long_beep;
-static wavedata_t trumpet;
 
 //Current tempo status
 static int tempo = 150;
@@ -50,7 +47,6 @@ void initialize_audio_files()
 {
     AudioMixer_readWaveFileIntoMemory(BEEP, &beep);
     AudioMixer_readWaveFileIntoMemory(LONG_BEEP, &long_beep);
-    AudioMixer_readWaveFileIntoMemory(TRUMPET, &trumpet);
 }
 
 /*
@@ -62,7 +58,6 @@ void remove_audio_files()
 {
     AudioMixer_freeWaveFileData(&beep);
     AudioMixer_freeWaveFileData(&long_beep);
-    AudioMixer_freeWaveFileData(&trumpet);
 }
 
 /*
@@ -76,15 +71,6 @@ static void waitTempo(int tempo, int note)
     float waitNanoSecond = (240 / (float)(tempo * note)) * NANO_SEC_CONVERSION;
     struct timespec reqDelay = {0, (long) waitNanoSecond};
     nanosleep(&reqDelay, (struct timespec *) NULL);
-}
-
-/*
-Plays trumpet
-input: void
-output: void
-*/
-void play_trumpet() {
-    AudioMixer_queueSound(&trumpet);
 }
 
 /*
