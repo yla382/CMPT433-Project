@@ -35,13 +35,6 @@ output: void
 */
 void remove_audio_files();
 
-/*
-Plays trumpet
-input: void
-output: void
-*/
-void play_trumpet();
-
 
 /*
 play short and long beep for morsecode
