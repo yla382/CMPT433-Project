@@ -6,13 +6,13 @@ The code allows the BeagleBone to survey sensor data, streaming video from webca
 
 
 About capture.c
-------
+======
 Souce code was adapted from https://github.com/derekmolloy/boneCV/blob/master/capture.c
 
 Author
 ------
 boneCV
-======
+------
 
 Beaglebone Webcam and OpenCV Examples Repository.
 
