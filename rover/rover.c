@@ -84,7 +84,6 @@ static char *getProgramStatus() {
 
 static void *playSound() {
 	initialize_audio_files();
-	play_trumpet();
 	while(continueProram) {
 		if(morsecode != NULL) {
 			if(strlen(morsecode) > 0) {
